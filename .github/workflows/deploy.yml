@@ -26,10 +26,13 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm exec vite build
         env:
-          BASE_PATH: /${{ github.event.repository.name }}/
+          # "" with a custom domain, "/<repo>" on <user>.github.io
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
       # SPA fallback so unknown paths still load the app
       - run: cp dist/index.html dist/404.html && touch dist/.nojekyll
       - uses: actions/upload-pages-artifact@v3
